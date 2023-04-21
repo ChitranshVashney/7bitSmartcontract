@@ -24,7 +24,7 @@ module.exports = {
     networks: {
         hardhat: {
             forking: {
-                url: POLYGON_MAINNET_RPC_URL,
+                url: MAINNET_RPC_URL,
             },
         },
         localhost: {

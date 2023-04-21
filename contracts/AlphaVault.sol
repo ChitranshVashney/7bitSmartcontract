@@ -126,6 +126,8 @@ contract AlphaVaultSwap is Ownable {
     function fillQuote(
         // The `buyTokenAddress` field from the API response.
         IERC20 buyToken,
+
+        IERC20 sellToken,
         // The `allowanceTarget` field from the API response.
         address spender,
         // The `to` field from the API response.
@@ -139,6 +141,7 @@ contract AlphaVaultSwap is Ownable {
         );
         // Track our balance of the buyToken to determine how much we've bought.
         uint256 boughtAmount = buyToken.balanceOf(address(this));
+        require(sellToken.approve(spender, type(uint128).max),"144 ERROR");
         (bool success, ) = swapTarget.call{value: 0}(swapCallData);
         emit ZeroXCallSuccess(success, boughtAmount);
         require(success, "SWAP_CALL_FAILED");
@@ -222,6 +225,7 @@ contract AlphaVaultSwap is Ownable {
             // Variable to store amount of tokens purchased.
             uint256 boughtAmount = fillQuote(
                 buyToken[i],
+                sellToken[i],
                 spender[i],
                 swapTarget[i],
                 swapCallData[i]
