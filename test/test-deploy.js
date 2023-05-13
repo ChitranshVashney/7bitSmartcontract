@@ -20,7 +20,7 @@ describe("AlphaVault", function() {
         const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
         const alphaVaultSwap = await AlphaVaultSwap.deploy()
         let response = await axios.get(
-            `https://api.0x.org/swap/v1/quote?buyToken=USDT&sellToken=WETH&sellAmount=100000000`
+            `https://bsc.api.0x.org/swap/v1/quote?buyToken=DAI&sellToken=WBNB&sellAmount=300000000000000000`
               );
               //   let Response=await response.json();
               swapQuoteJSON=response.data;
@@ -31,41 +31,41 @@ describe("AlphaVault", function() {
             // const user_balance1=await WETH.balanceOf(deployer.address);
             // console.log("-------------",user_balance1.toString(),"----------------");
             await WETH.deposit({
-            value: ethers.utils.parseEther("1")
-        }); 
+                value: ethers.utils.parseEther("6")
+            }); 
 
 
-            let allowance1 = await WETH.allowance(deployer.address,response.data.allowanceTarget);
-            console.log(allowance1.toString());
             const max_approve= BigInt("1157920892373161954235709850086879078532699846656405640394575840079131296399");
             const txResponseWETH= await WETH.approve(response.data.allowanceTarget,max_approve)
             const txResponseWETH1= await WETH.approve(alphaVaultSwap.address,max_approve)
             await txResponseWETH.wait(1);
             await txResponseWETH1.wait(1);
-            const txtransferFrom=await WETH.transferFrom(deployer.address,alphaVaultSwap.address,ethers.utils.parseEther("0.1"))
+            let allowance1 = await WETH.allowance(deployer.address,alphaVaultSwap.address);
+            console.log(allowance1.toString());
+            const txtransferFrom=await WETH.transfer(alphaVaultSwap.address,response.data.sellAmount)
             await txtransferFrom.wait(1);
-            const user_balance=await WETH.balanceOf(deployer.address);
+            const user_balance=await WETH.balanceOf(alphaVaultSwap.address);
             console.log("-------------",user_balance.toString(),"----------------");
             console.log(response.data.buyTokenAddress,
                 response.data.sellTokenAddress,
                 response.data.allowanceTarget,
                 response.data.to,
                 response.data.data);
-                
-            const txRes=await alphaVaultSwap.fillQuote(
-                response.data.buyTokenAddress,
-                response.data.sellTokenAddress,
-                response.data.allowanceTarget,
-                response.data.to,
-                response.data.data);
+            const txRes=await alphaVaultSwap.multiSwap(
+                [response.data.sellTokenAddress],
+                [response.data.buyTokenAddress],
+                [response.data.to],
+                [response.data.allowanceTarget],
+                [response.data.data],
+                [response.data.sellAmount]);//,{value: ethers.utils.parseEther("0.01"),}
                 const tx = txRes.wait(1);
             // console.log(await tx);
-            let DAI=await ethers.getContractAt("IWETH",
+            let DAI=await ethers.getContractAt("IERC20",
                 response.data.buyTokenAddress,
                 deployer
                 );
-                const contractDAI=await DAI.balanceOf(alphaVaultSwap.address)
-                console.log(contractDAI.toString());
+                const contractDAI=await DAI.balanceOf(deployer.address)
+                console.log("DAI balance-->",contractDAI.toString());
             
         });
     });

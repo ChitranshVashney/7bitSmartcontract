@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "hardhat/console.sol";
 
 interface IWETH is IERC20 {
     function deposit() external payable;
@@ -18,7 +19,6 @@ contract AlphaVaultSwap is Ownable {
     event buyTokenBought(uint256 buTokenAmount);
     event feePercentageChange(uint256 feePercentage);
     event maxTransactionsChange(uint256 maxTransactions);
-    event maxAllowanceGiven(IERC20 sellToken,uint256 allowance);
 
     /**
      * @dev Event to notify if transfer successful or failed
@@ -45,7 +45,7 @@ contract AlphaVaultSwap is Ownable {
     address private destination;
 
     constructor(){
-        WETH = IWETH(0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6);
+        WETH = IWETH(0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c);
         maxTransactions = 25;
         feePercentage = 5;
     }
@@ -110,17 +110,6 @@ contract AlphaVaultSwap is Ownable {
         payable(msgSender).transfer(amount);
     }
 
-    function allowanceCheck(IERC20 sellToken, uint256 amount, address spender) internal {
-        // ERC20Interface = IERC20(sellToken);
-        if(sellToken.allowance(address(this),spender)<amount){
-            // Give `spender` an infinite allowance to spend this contract's `sellToken`.
-            // Note that for some tokens (e.g., USDT, KNC), you must first reset any existing
-            // allowance to 0 before being able to update it.
-            require(sellToken.approve(spender, 0));
-            require(sellToken.approve(spender, type(uint128).max));
-            emit maxAllowanceGiven(sellToken,type(uint128).max);
-        }
-    }
 
     // Swaps ERC20->ERC20 tokens held by this contract using a 0x-API quote.
     function fillQuote(
@@ -216,12 +205,6 @@ contract AlphaVaultSwap is Ownable {
                 depositToken(sellToken[i], amount[i]);
             }
 
-            allowanceCheck(
-                sellToken[i],
-                amount[i],
-                spender[i]
-            );
-
             // Variable to store amount of tokens purchased.
             uint256 boughtAmount = fillQuote(
                 buyToken[i],
@@ -230,6 +213,7 @@ contract AlphaVaultSwap is Ownable {
                 swapTarget[i],
                 swapCallData[i]
             );
+            console.log("bought amount------->",boughtAmount,buyToken[i].balanceOf(address(this)));
 
             // Codition to check if token for withdrawl is ETHER/WETH
             if (buyToken[i] == WETH) {
