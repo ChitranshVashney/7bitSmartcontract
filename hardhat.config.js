@@ -36,6 +36,12 @@ module.exports = {
             chainId: 5,
             blockConfirmations: 6,
         },
+        mainnet: {
+            url: MAINNET_RPC_URL,
+            accounts: [PRIVATE_KEY],
+            chainId: 56,
+            blockConfirmations: 6,
+        },
     },
     solidity: {
         compilers: [
