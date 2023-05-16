@@ -36,10 +36,10 @@ module.exports = {
             chainId: 5,
             blockConfirmations: 6,
         },
-        mainnet: {
+        polygon: {
             url: MAINNET_RPC_URL,
             accounts: [PRIVATE_KEY],
-            chainId: 56,
+            chainId: 137,
             blockConfirmations: 6,
         },
     },
@@ -57,14 +57,17 @@ module.exports = {
         ],
     },
     etherscan: {
-        apiKey: ETHERSCAN_API_KEY,
+        apiKey: {
+            polygon:"M72KYXSB62ZTFGD58APVIJ76VEYQ9H97VY",
+        },
+        customChains: [],
     },
     gasReporter: {
         enabled: true,
-        currency: "USD",
-        outputFile: "gas-report.txt",
-        noColors: true,
-        // coinmarketcap: COINMARKETCAP_API_KEY,
+        // currency: "RUP",
+        // outputFile: "gas-report.txt",
+        // noColors: true,
+        coinmarketcap: "c96f5ab9-4629-4ec0-b6dd-68275f6bd483",
     },
     namedAccounts: {
         deployer: {

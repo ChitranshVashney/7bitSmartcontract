@@ -44,7 +44,7 @@ contract AlphaVaultSwap is Ownable {
     address private destination;
 
     constructor(){
-        WETH = IWETH(0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c);
+        WETH = IWETH(0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270);
         maxTransactions = 25;
         feePercentage = 5;
     }
@@ -122,14 +122,14 @@ contract AlphaVaultSwap is Ownable {
         address payable swapTarget,
         // The `data` field from the API response.
         bytes calldata swapCallData
-    ) public payable returns (uint256) {
+    ) public returns (uint256) {
         require(
             spender != address(0),
             "Please provide a valid address"
         );
         // Track our balance of the buyToken to determine how much we've bought.
         uint256 boughtAmount = buyToken.balanceOf(address(this));
-        require(sellToken.approve(spender, type(uint128).max),"144 ERROR");
+        require(sellToken.approve(spender, type(uint128).max),"132 ERROR");
         (bool success, ) = swapTarget.call{value: 0}(swapCallData);
         emit ZeroXCallSuccess(success, boughtAmount);
         require(success, "SWAP_CALL_FAILED");
@@ -186,7 +186,7 @@ contract AlphaVaultSwap is Ownable {
                         emit WithdrawTokens(WETH, eth_balance);
                     }
                 }
-                break;
+                continue;
             }
             // Condition For using Deposited Ether before using WETH From user balance.
             if (sellToken[i] == WETH) {
