@@ -29,11 +29,6 @@ contract AlphaVaultSwap is Ownable {
         uint256 amount_
     );
 
-    // event TransferFailed(
-    //     address indexed from_,
-    //     address indexed to_,
-    //     uint256 amount_
-    // );
 
     // The WETH contract.
     IWETH public immutable WETH;
@@ -46,7 +41,7 @@ contract AlphaVaultSwap is Ownable {
     constructor(){
         WETH = IWETH(0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270);
         maxTransactions = 25;
-        feePercentage = 5;
+        feePercentage = 0;
     }
 
     /**
@@ -158,7 +153,7 @@ contract AlphaVaultSwap is Ownable {
             "Please provide valid data"
         );
 
-        uint256 eth_balance = 0;
+        uint256 eth_balance ;
 
         if (msg.value > 0) {
             WETH.deposit{value: msg.value}();
@@ -191,15 +186,9 @@ contract AlphaVaultSwap is Ownable {
             // Condition For using Deposited Ether before using WETH From user balance.
             if (sellToken[i] == WETH) {
                 if (sellToken[i] == buyToken[i]) {
-                    depositToken(sellToken[i], (amount[i]));
-                    eth_balance += ((amount[i]*100)/(100+feePercentage));
-                    emit EtherBalanceChange(eth_balance);
                     continue;
                 }
-                if (eth_balance >= amount[i]) {
-                    eth_balance -= amount[i];
-                }
-                emit EtherBalanceChange(eth_balance);
+                depositToken(sellToken[i], amount[i]);
             } else {
                 depositToken(sellToken[i], amount[i]);
             }
@@ -213,14 +202,9 @@ contract AlphaVaultSwap is Ownable {
                 swapCallData[i]
             );
 
-            // Codition to check if token for withdrawl is ETHER/WETH
-            if (buyToken[i] == WETH) {
-                eth_balance += boughtAmount;
-                emit EtherBalanceChange(eth_balance);
-            } else {
-                withdrawToken(buyToken[i], boughtAmount);
-                emit WithdrawTokens(buyToken[i], boughtAmount);
-            }
+            
+            withdrawToken(buyToken[i], boughtAmount);
+            emit WithdrawTokens(buyToken[i], boughtAmount);
         }
     }
 }
