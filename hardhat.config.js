@@ -36,10 +36,10 @@ module.exports = {
             chainId: 5,
             blockConfirmations: 6,
         },
-        polygon: {
+        ftm: {
             url: MAINNET_RPC_URL,
             accounts: [PRIVATE_KEY],
-            chainId: 137,
+            chainId: 250,
             blockConfirmations: 6,
         },
     },
