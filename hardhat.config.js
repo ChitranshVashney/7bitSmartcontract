@@ -36,10 +36,10 @@ module.exports = {
             chainId: 5,
             blockConfirmations: 6,
         },
-        ftm: {
+        arbitium: {
             url: MAINNET_RPC_URL,
             accounts: [PRIVATE_KEY],
-            chainId: 250,
+            chainId: 42161,
             blockConfirmations: 6,
         },
     },

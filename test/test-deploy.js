@@ -223,7 +223,7 @@ describe("AlphaVault", function() {
                         const contractUSDT=await USDT.balanceOf(deployer.address)
                         console.log("USDT balance-->",contractUSDT.toString());
             }
-            if(true){
+            if(false){
                 [deployer] = await ethers.getSigners();
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -236,20 +236,22 @@ describe("AlphaVault", function() {
                     response.data.sellTokenAddress,
                     deployer
                     );
-                    // const user_balance1=await WETH.balanceOf(deployer.address);
-                    // console.log("-------------",user_balance1.toString(),"----------------");
+                    const user_balance1=await WETH.balanceOf(deployer.address);
+                    console.log("-------------",user_balance1.toString(),"----------------");
                     // await WETH.deposit({
-                    //     value: 10000000000000
-                    // }); 
-        
-        
-                    const max_approve= BigInt("1157920892373161954235709850086879078532699846656405640394575840079131296399");
-                    // const txResponseWETH= await WETH.approve(response.data.allowanceTarget,max_approve)
-                    const txResponseWETH1= await WETH.approve(alphaVaultSwap.address,max_approve)
-                    // await txResponseWETH.wait(1);
-                    await txResponseWETH1.wait(1);
-                    let allowance1 = await WETH.allowance(deployer.address,alphaVaultSwap.address);
-                    console.log(allowance1.toString());
+                        //     value: 10000000000000
+                        // }); 
+                        
+                        
+                        const max_approve= BigInt("1157920892373161954235709850086879078532699846656405640394575840079131296399");
+                        // const txResponseWETH= await WETH.approve(response.data.allowanceTarget,max_approve)
+                        const txResponseWETH1= await WETH.approve(alphaVaultSwap.address,max_approve)
+                        // await txResponseWETH.wait(1);
+                        await txResponseWETH1.wait(1);
+                        let allowance1 = await WETH.allowance(deployer.address,alphaVaultSwap.address);
+                        console.log(allowance1.toString());
+                        const user_balance2=await WETH.balanceOf(deployer.address);
+                        console.log("-------------",user_balance2.toString(),"----------------");
                     // const txtransferFrom=await WETH.transfer(alphaVaultSwap.address,response.data.sellAmount)
                     // await txtransferFrom.wait(1);
                     // const user_balance=await WETH.balanceOf(alphaVaultSwap.address);
@@ -283,6 +285,76 @@ describe("AlphaVault", function() {
                         );
                         const contractWMATIC=await WMATIC.balanceOf(deployer.address)
                         console.log("WMATIC balance-->",contractWMATIC.toString());
+        
+                    let USDT=await ethers.getContractAt("IERC20",
+                    response.data.buyTokenAddress,
+                        deployer
+                        );
+                        const contractUSDT=await USDT.balanceOf(deployer.address)
+                        console.log("USDT balance-->",contractUSDT.toString());
+            }
+            if(true){
+                [deployer] = await ethers.getSigners();
+                const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
+                const alphaVaultSwap = await AlphaVaultSwap.deploy()
+                let response = await axios.get(
+                    `https://arbitrum.api.0x.org/swap/v1/quote?buyToken=0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1&sellToken=0x82aF49447D8a07e3bd95BD0d56f35241523fBab1&sellAmount=8193747396917710000`
+                      );
+                      //   let Response=await response.json();
+                      swapQuoteJSON=response.data;
+                let WETH=await ethers.getContractAt("IWETH",
+                    response.data.sellTokenAddress,
+                    deployer
+                    );
+                    const user_balance1=await WETH.balanceOf(deployer.address);
+                    console.log("-------------",user_balance1.toString(),"----------------");
+                    // await WETH.deposit({
+                        //     value: 10000000000000
+                        // }); 
+                        
+                        
+                        const max_approve= BigInt("1157920892373161954235709850086879078532699846656405640394575840079131296399");
+                        // const txResponseWETH= await WETH.approve(response.data.allowanceTarget,max_approve)
+                        const txResponseWETH1= await WETH.approve(alphaVaultSwap.address,max_approve)
+                        // await txResponseWETH.wait(1);
+                        await txResponseWETH1.wait(1);
+                        let allowance1 = await WETH.allowance(deployer.address,alphaVaultSwap.address);
+                        console.log(allowance1.toString());
+                        const user_balance2=await WETH.balanceOf(deployer.address);
+                        console.log("-------------",user_balance2.toString(),"----------------");
+                    // const txtransferFrom=await WETH.transfer(alphaVaultSwap.address,response.data.sellAmount)
+                    // await txtransferFrom.wait(1);
+                    // const user_balance=await WETH.balanceOf(alphaVaultSwap.address);
+                    // console.log("-------------",user_balance.toString(),"----------------");
+                    // console.log(response.data.buyTokenAddress,
+                    //     response.data.sellTokenAddress,
+                    //     response.data.allowanceTarget,
+                    //     response.data.to,
+                    //     response.data.data);
+                    const txRes=await alphaVaultSwap.multiSwap(
+                        ['0x0000000000000000000000000000000000000000',response.data.sellTokenAddress],
+                        [response.data.sellTokenAddress, response.data.buyTokenAddress],
+                        ['0x0000000000000000000000000000000000000000',response.data.to],
+                        ['0x0000000000000000000000000000000000000000',response.data.allowanceTarget ],
+                        ['0x1230000000000000000001230000',response.data.data],
+                        [0,response.data.sellAmount]
+                        ,{value: BigInt("8193747396917710000")});
+                        const tx = await txRes.wait(1);
+                        // console.log(tx);
+                    // let USDC=await ethers.getContractAt("IERC20",
+                    // '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+                    //     deployer
+                    //     );
+                    //     const contractUSDC=await USDC.balanceOf(deployer.address)
+                    //     console.log("USDC balance-->",contractUSDC.toString());
+        
+        
+                    let WMATIC=await ethers.getContractAt("IERC20",
+                    response.data.sellTokenAddress,
+                        deployer
+                        );
+                        const contractWMATIC=await WMATIC.balanceOf(deployer.address)
+                        console.log("WEth balance-->",contractWMATIC.toString());
         
                     let USDT=await ethers.getContractAt("IERC20",
                     response.data.buyTokenAddress,
