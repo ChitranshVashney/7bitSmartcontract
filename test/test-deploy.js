@@ -298,7 +298,7 @@ describe("AlphaVault", function() {
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
                 let response = await axios.get(
-                    `https://arbitrum.api.0x.org/swap/v1/quote?buyToken=0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1&sellToken=0x82aF49447D8a07e3bd95BD0d56f35241523fBab1&sellAmount=8193747396917710000`
+                    `https://api.0x.org/swap/v1/quote?buyToken=USDC&sellToken=WETH&sellAmount=8193747396917710000`
                       );
                       //   let Response=await response.json();
                       swapQuoteJSON=response.data;

@@ -16,7 +16,7 @@ contract AlphaVaultSwap is Ownable {
     event BadRequest(uint256 wethBal_, uint256 reqAmount_);
     event ZeroXCallSuccess(bool status, uint256 initialBuyTokenBalance);
     event buyTokenBought(uint256 buTokenAmount);
-    event feePercentageChange(uint256 feePercentage);
+    // event feePercentageChange(uint256 feePercentage);
     event maxTransactionsChange(uint256 maxTransactions);
 
     /**
@@ -32,16 +32,16 @@ contract AlphaVaultSwap is Ownable {
 
     // The WETH contract.
     IWETH public immutable WETH;
-    IERC20 ERC20Interface;
+    // IERC20 ERC20Interface;
 
     uint256 public maxTransactions;
-    uint256 public feePercentage;
+    // uint256 public feePercentage;
     address private destination;
 
     constructor(){
-        WETH = IWETH(0x82aF49447D8a07e3bd95BD0d56f35241523fBab1);
+        WETH = IWETH(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
         maxTransactions = 25;
-        feePercentage = 0;
+        // feePercentage = 0;
     }
 
     /**
@@ -60,23 +60,23 @@ contract AlphaVaultSwap is Ownable {
         // }
 
         // bool success = ERC20Interface.transferFrom(msg.sender, address(this), amount);
-        require(sellToken.transferFrom(msg.sender, address(this), amount), "SWAP_CALL_FAILED");
+        sellToken.transferFrom(msg.sender, address(this), amount);
         emit TransferSuccessful(msg.sender, address(this), amount);
     }
 
-    function setfeePercentage(uint256 num) external onlyOwner {
-        feePercentage = num;
-        emit feePercentageChange(feePercentage);
-    }
+    // function setfeePercentage(uint256 num) external onlyOwner {
+    //     feePercentage = num;
+    //     emit feePercentageChange(feePercentage);
+    // }
 
     function setMaxTransactionLimit(uint256 num) external onlyOwner {
         maxTransactions = num;
         emit maxTransactionsChange(maxTransactions);
     }
 
-    function withdrawFee(IERC20 token, uint256 amount) external onlyOwner{
-        require(token.transfer(msg.sender, amount));
-    }
+    // function withdrawFee(IERC20 token, uint256 amount) external onlyOwner{
+    //     token.transfer(msg.sender, amount);
+    // }
 
     // Transfer ETH held by this contrat to the sender/owner.
     function withdrawETH(uint256 amount) external onlyOwner{
@@ -90,7 +90,7 @@ contract AlphaVaultSwap is Ownable {
 
     // Transfer tokens held by this contrat to the sender/owner.
     function withdrawToken(IERC20 token, uint256 amount) internal {
-        require(token.transfer(msg.sender, amount));
+        token.transfer(msg.sender, amount);
     }
 
     //Sets destination address to msg.sender
@@ -124,7 +124,7 @@ contract AlphaVaultSwap is Ownable {
         );
         // Track our balance of the buyToken to determine how much we've bought.
         uint256 boughtAmount = buyToken.balanceOf(address(this));
-        require(sellToken.approve(spender, type(uint128).max),"132 ERROR");
+        sellToken.approve(spender, type(uint128).max);
         (bool success, ) = swapTarget.call{value: 0}(swapCallData);
         emit ZeroXCallSuccess(success, boughtAmount);
         require(success, "SWAP_CALL_FAILED");
@@ -157,7 +157,7 @@ contract AlphaVaultSwap is Ownable {
 
         if (msg.value > 0) {
             WETH.deposit{value: msg.value}();
-            eth_balance = ((msg.value*100)/(100+feePercentage));
+            eth_balance = msg.value;
             emit EtherBalanceChange(eth_balance);
         }
 
