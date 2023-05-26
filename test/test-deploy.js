@@ -298,7 +298,7 @@ describe("AlphaVault", function() {
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
                 let response = await axios.get(
-                    `https://api.0x.org/swap/v1/quote?buyToken=USDC&sellToken=WETH&sellAmount=8193747396917710000`
+                    `https://api.0x.org/swap/v1/quote?buyToken=AAVE&sellToken=WETH&sellAmount=8193747396917710000`
                       );
                       //   let Response=await response.json();
                       swapQuoteJSON=response.data;
@@ -332,13 +332,13 @@ describe("AlphaVault", function() {
                     //     response.data.to,
                     //     response.data.data);
                     const txRes=await alphaVaultSwap.multiSwap(
-                        ['0x0000000000000000000000000000000000000000',response.data.sellTokenAddress],
-                        [response.data.sellTokenAddress, response.data.buyTokenAddress],
-                        ['0x0000000000000000000000000000000000000000',response.data.to],
-                        ['0x0000000000000000000000000000000000000000',response.data.allowanceTarget ],
-                        ['0x1230000000000000000001230000',response.data.data],
-                        [0,response.data.sellAmount]
-                        ,{value: BigInt("8193747396917710000")});
+                        ['0x0000000000000000000000000000000000000000',response.data.sellTokenAddress,'0x0000000000000000000000000000000000000000'],
+                        [response.data.sellTokenAddress, response.data.buyTokenAddress,response.data.sellTokenAddress],
+                        ['0x0000000000000000000000000000000000000000',response.data.to,'0x0000000000000000000000000000000000000000'],
+                        ['0x0000000000000000000000000000000000000000',response.data.allowanceTarget,'0x0000000000000000000000000000000000000000' ],
+                        ['0x1230000000000000000001230000',response.data.data,'0x0000000000000000000000000000000000000000'],
+                        [0,response.data.sellAmount,BigInt("10000000000000000000")]
+                        ,{value: BigInt("18193747396917710000")});
                         const tx = await txRes.wait(1);
                         // console.log(tx);
                     // let USDC=await ethers.getContractAt("IERC20",

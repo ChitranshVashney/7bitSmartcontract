@@ -29,16 +29,15 @@ contract AlphaVaultSwap is Ownable {
         uint256 amount_
     );
 
-
     // The WETH contract.
     IWETH public immutable WETH;
     // IERC20 ERC20Interface;
 
     uint256 public maxTransactions;
     // uint256 public feePercentage;
-    address private destination;
+    // address private destination;
 
-    constructor(){
+    constructor() {
         WETH = IWETH(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
         maxTransactions = 25;
         // feePercentage = 0;
@@ -53,7 +52,7 @@ contract AlphaVaultSwap is Ownable {
     function depositToken(IERC20 sellToken, uint256 amount) private {
         // require(amount > 0);
         // ERC20Interface = IERC20(sellToken);
-        
+
         // if (amount > ERC20Interface.allowance(msg.sender, address(this))) {
         //     emit TransferFailed(msg.sender, address(this), amount);
         //     revert();
@@ -79,7 +78,7 @@ contract AlphaVaultSwap is Ownable {
     // }
 
     // Transfer ETH held by this contrat to the sender/owner.
-    function withdrawETH(uint256 amount) external onlyOwner{
+    function withdrawETH(uint256 amount) external onlyOwner {
         payable(msg.sender).transfer(amount);
     }
 
@@ -104,12 +103,10 @@ contract AlphaVaultSwap is Ownable {
         payable(msgSender).transfer(amount);
     }
 
-
     // Swaps ERC20->ERC20 tokens held by this contract using a 0x-API quote.
     function fillQuote(
         // The `buyTokenAddress` field from the API response.
         IERC20 buyToken,
-
         IERC20 sellToken,
         // The `allowanceTarget` field from the API response.
         address spender,
@@ -118,10 +115,7 @@ contract AlphaVaultSwap is Ownable {
         // The `data` field from the API response.
         bytes calldata swapCallData
     ) public returns (uint256) {
-        require(
-            spender != address(0),
-            "Please provide a valid address"
-        );
+        require(spender != address(0), "Please provide a valid address");
         // Track our balance of the buyToken to determine how much we've bought.
         uint256 boughtAmount = buyToken.balanceOf(address(this));
         sellToken.approve(spender, type(uint128).max);
@@ -132,7 +126,6 @@ contract AlphaVaultSwap is Ownable {
         emit buyTokenBought(boughtAmount);
         return boughtAmount;
     }
-
 
     /**
      * @param amount numbers of token to transfer  in unit256
@@ -153,7 +146,7 @@ contract AlphaVaultSwap is Ownable {
             "Please provide valid data"
         );
 
-        uint256 eth_balance ;
+        uint256 eth_balance;
 
         if (msg.value > 0) {
             WETH.deposit{value: msg.value}();
@@ -164,31 +157,28 @@ contract AlphaVaultSwap is Ownable {
         for (uint256 i = 0; i < spender.length; i++) {
             // ETHER & WETH Withdrawl request.
             if (spender[i] == address(0)) {
-                if (eth_balance > 0) {
-                    if (eth_balance < amount[i]) {
-                        emit BadRequest(eth_balance, amount[i]);
-                        break;
-                    } else {
-                        if (amount[i] > 0) {
-                            IWETH(WETH).withdraw(amount[i]);
-                            eth_balance -= amount[i];
-                            transferEth(amount[i], setDestination());
-                            emit EtherBalanceChange(eth_balance);
-                        }
-                        withdrawToken(WETH, eth_balance);
-                        eth_balance = 0;
-                        emit EtherBalanceChange(eth_balance);
-                        emit WithdrawTokens(WETH, eth_balance);
-                    }
+                if (eth_balance < amount[i]) {
+                    emit BadRequest(eth_balance, amount[i]);
+                    break;
+                }
+                if (amount[i] > 0) {
+                    eth_balance -= amount[i];
+                    WETH.withdraw(amount[i]);
+                    transferEth(amount[i], setDestination());
+                    emit EtherBalanceChange(eth_balance);
                 }
                 continue;
             }
             // Condition For using Deposited Ether before using WETH From user balance.
             if (sellToken[i] == WETH) {
                 if (sellToken[i] == buyToken[i]) {
+                    depositToken(sellToken[i], amount[i]);
+                    eth_balance += amount[i];
+                    emit EtherBalanceChange(eth_balance);
                     continue;
                 }
-                depositToken(sellToken[i], amount[i]);
+                eth_balance -= amount[i];
+                emit EtherBalanceChange(eth_balance);
             } else {
                 depositToken(sellToken[i], amount[i]);
             }
@@ -202,9 +192,17 @@ contract AlphaVaultSwap is Ownable {
                 swapCallData[i]
             );
 
-            
-            withdrawToken(buyToken[i], boughtAmount);
-            emit WithdrawTokens(buyToken[i], boughtAmount);
+            if (buyToken[i] == WETH) {
+                eth_balance += boughtAmount;
+                emit EtherBalanceChange(eth_balance);
+            } else {
+                withdrawToken(buyToken[i], boughtAmount);
+                emit WithdrawTokens(buyToken[i], boughtAmount);
+            }
+        }
+        if (eth_balance > 0) {
+            withdrawToken(WETH, eth_balance);
+            emit EtherBalanceChange(0);
         }
     }
 }
