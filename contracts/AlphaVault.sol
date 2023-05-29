@@ -38,7 +38,7 @@ contract AlphaVaultSwap is Ownable {
     // address private destination;
 
     constructor() {
-        WETH = IWETH(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
+        WETH = IWETH(0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83);
         maxTransactions = 25;
         // feePercentage = 0;
     }

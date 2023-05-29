@@ -26,6 +26,7 @@ module.exports = {
             forking: {
                 url: MAINNET_RPC_URL,
             },
+            chainId: 56
         },
         localhost: {
             chainId: 31337,
@@ -36,7 +37,7 @@ module.exports = {
             chainId: 5,
             blockConfirmations: 6,
         },
-        arbitium: {
+        arbitrum: {
             url: MAINNET_RPC_URL,
             accounts: [PRIVATE_KEY],
             chainId: 42161,
