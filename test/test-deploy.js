@@ -2,6 +2,7 @@ const { expect, assert } = require("chai");
 const { ethers, getNamedAccounts, network } = require("hardhat")
 const axios = require('axios');
 const { BigNumber, utils } = require("ethers");
+const {networks}= require("../scripts/networks");
 
 describe("AlphaVault", function() {
 
@@ -16,7 +17,7 @@ describe("AlphaVault", function() {
     
     // Test the function
     it("should fill the quote and return the bought amount", async function() {
-            if(false){
+            if(networks.chain_id == 137 ){
         [deployer] = await ethers.getSigners();
         const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
         const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -87,7 +88,7 @@ describe("AlphaVault", function() {
                 const contractUSDT=await USDT.balanceOf(deployer.address)
                 console.log("USDT balance-->",contractUSDT.toString());
             }
-            if(false){
+            if(networks.chain_id == 56){
                 [deployer] = await ethers.getSigners();
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -155,7 +156,7 @@ describe("AlphaVault", function() {
                         const contractUSDT=await USDT.balanceOf(deployer.address)
                         console.log("USDT balance-->",contractUSDT.toString());
             }
-            if(false){
+            if( networks.chain_id == 43114 ){
                 [deployer] = await ethers.getSigners();
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -223,7 +224,7 @@ describe("AlphaVault", function() {
                         const contractUSDT=await USDT.balanceOf(deployer.address)
                         console.log("USDT balance-->",contractUSDT.toString());
             }
-            if(false){
+            if(networks.chain_id == 250 ){
                 [deployer] = await ethers.getSigners();
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -297,6 +298,7 @@ describe("AlphaVault", function() {
                 [deployer] = await ethers.getSigners();
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
+
                 let response = await axios.get(
                     `https://api.0x.org/swap/v1/quote?buyToken=AAVE&sellToken=WETH&sellAmount=8193747396917710000`
                       );
