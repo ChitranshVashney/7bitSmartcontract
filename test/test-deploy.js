@@ -17,7 +17,7 @@ describe("AlphaVault", function() {
     
     // Test the function
     it("should fill the quote and return the bought amount", async function() {
-            if(networks.chain_id == 137 ){
+            if(provider.getNetwork().chainId == 137 ){
         [deployer] = await ethers.getSigners();
         const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
         const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -40,7 +40,7 @@ describe("AlphaVault", function() {
             // }); 
 
 
-            const max_approve= BigInt("1157920892373161954235709850086879078532699846656405640394575840079131296399");
+            const max_approve= BigInt("11579208923731619542357098500868790785326998466405640394575840079131296399");
             // const txResponseWETH= await WETH.approve(response.data.allowanceTarget,max_approve)
             const txResponseWETH1= await WETH.approve(alphaVaultSwap.address,max_approve)
             // await txResponseWETH.wait(1);
@@ -156,7 +156,7 @@ describe("AlphaVault", function() {
                         const contractUSDT=await USDT.balanceOf(deployer.address)
                         console.log("USDT balance-->",contractUSDT.toString());
             }
-            if( networks.chain_id == 43114 ){
+            if( provider.getNetwork().chainId == 43114 ){
                 [deployer] = await ethers.getSigners();
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -224,7 +224,7 @@ describe("AlphaVault", function() {
                         const contractUSDT=await USDT.balanceOf(deployer.address)
                         console.log("USDT balance-->",contractUSDT.toString());
             }
-            if(networks.chain_id == 250 ){
+            if(provider.getNetwork().chainId== 250 ){
                 [deployer] = await ethers.getSigners();
                 const AlphaVaultSwap = await ethers.getContractFactory("AlphaVaultSwap")
                 const alphaVaultSwap = await AlphaVaultSwap.deploy()
@@ -365,5 +365,13 @@ describe("AlphaVault", function() {
                         const contractUSDT=await USDT.balanceOf(deployer.address)
                         console.log("USDT balance-->",contractUSDT.toString());
             }
+
+
+       
+
+
+
+
+
         });
     });

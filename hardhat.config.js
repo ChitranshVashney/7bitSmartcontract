@@ -26,6 +26,7 @@ module.exports = {
             forking: {
                 url: MAINNET_RPC_URL,
             },
+            chainId: 56
         },
         localhost: {
             chainId: 31337,
