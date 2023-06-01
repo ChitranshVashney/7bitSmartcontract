@@ -25,6 +25,7 @@ module.exports = {
         hardhat: {
             forking: {
                 url: MAINNET_RPC_URL,
+                blockNumber: 28700431,
             },
         },
         localhost: {
@@ -36,10 +37,10 @@ module.exports = {
             chainId: 5,
             blockConfirmations: 6,
         },
-        arbitium: {
+        bnb: {
             url: MAINNET_RPC_URL,
             accounts: [PRIVATE_KEY],
-            chainId: 42161,
+            chainId: 56,
             blockConfirmations: 6,
         },
     },
@@ -64,7 +65,7 @@ module.exports = {
     },
     gasReporter: {
         enabled: true,
-        // currency: "RUP",
+        currency: "USD",
         // outputFile: "gas-report.txt",
         // noColors: true,
         coinmarketcap: "c96f5ab9-4629-4ec0-b6dd-68275f6bd483",
