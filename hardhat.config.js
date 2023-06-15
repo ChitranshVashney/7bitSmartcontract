@@ -25,7 +25,6 @@ module.exports = {
         hardhat: {
             forking: {
                 url: MAINNET_RPC_URL,
-                blockNumber: 28700431,
             },
         },
         localhost: {
@@ -41,6 +40,18 @@ module.exports = {
             url: MAINNET_RPC_URL,
             accounts: [PRIVATE_KEY],
             chainId: 56,
+            blockConfirmations: 6,
+        },
+        arbitrum: {
+            url: MAINNET_RPC_URL,
+            accounts: [PRIVATE_KEY],
+            chainId: 42161,
+            blockConfirmations: 6,
+        },
+        optimism: {
+            url: MAINNET_RPC_URL,
+            accounts: [PRIVATE_KEY],
+            chainId: 10,
             blockConfirmations: 6,
         },
     },
@@ -60,6 +71,7 @@ module.exports = {
     etherscan: {
         apiKey: {
             polygon:"M72KYXSB62ZTFGD58APVIJ76VEYQ9H97VY",
+            arbitrumOne:"IARHKU216PBQDDFJCRM6U7U745VMWW43K9"
         },
         customChains: [],
     },

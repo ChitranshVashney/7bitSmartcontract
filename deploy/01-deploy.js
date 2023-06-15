@@ -28,6 +28,6 @@ module.exports=async({getNamedAccounts,deployments})=>{
 //   }
 // }
 // if(true){
-// await verify("0x7f74003d47771BEA2C60827495017817b3Aa9e6F",[]);
+// await verify("0x2847efCF4Ac0D239A431697d0B7ABf6db90CA730",[]);
 // }
 }
