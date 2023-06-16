@@ -48,6 +48,12 @@ module.exports = {
             chainId: 42161,
             blockConfirmations: 6,
         },
+        eth: {
+            url: MAINNET_RPC_URL,
+            accounts: [PRIVATE_KEY],
+            chainId: 1,
+            blockConfirmations: 6,
+        },
         optimism: {
             url: MAINNET_RPC_URL,
             accounts: [PRIVATE_KEY],
